@@ -1,0 +1,22 @@
+{
+  "name": "ankama",
+  "version": "1.0.0",
+  "description": "Ankama runelist scrapper",
+  "main": "index.js",
+  "dependencies": {
+    "scrape-it": "^5.2.4"
+  },
+  "devDependencies": {
+    "eslint": "^7.7.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Javier Marin, Richard Marin",
+  "license": "ISC"
+}
