@@ -4,6 +4,7 @@
   "description": "Ankama runelist scrapper",
   "main": "index.js",
   "dependencies": {
+    "axios": "^0.20.0",
     "scrape-it": "^5.2.4"
   },
   "devDependencies": {

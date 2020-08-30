@@ -1,25 +1,38 @@
 const scrapeIt = require('scrape-it')
+const FS = require('fs')
+const PATH = require('path')
+const axios = require('axios')
 
-const URL = 'https://www.dofus.com/es/mmorpg/enciclopedia/recursos?text=&EFFECTMAIN_and_or=AND&object_level_min=1&object_level_max=200&type_id%5B%5D=78&EFFECT_and_or=AND#jt_list'
-
-scrapeIt(URL, {
+const PAGES = 4
+const url = n => `https://www.dofus.com/es/mmorpg/enciclopedia/recursos?text=&EFFECTMAIN_and_or=AND&object_level_min=1&object_level_max=200&type_id[0]=78&EFFECT_and_or=AND&page=${n}`
+const BLUEPRINT = {
   runes: {
     listItem: '.ak-linker a',
     data: {
       url: {
-        selector: 'a img',
+        selector: 'a',
         attr: 'src'
       },
       title: {
         selector: 'a img',
-        attr: 'alt'
+        attr: 'alt',
+        convert: x => x.replace(/\s+/g, '-')
       }
     }
   }
-}).then(({ data }) => {
-  const cleanData = cleaner(data.runes)
-  console.log(cleanData)
-})
+}
+
+multiScrap()
+
+async function multiScrap () {
+  for (let i = 0; i <= PAGES; i++) {
+    const scrape = await scrapeIt(url(i), BLUEPRINT)
+    const cleanData = cleaner(scrape.data.runes)
+    cleanData.forEach(item => download(item))
+  }
+}
+
+// https://www.dofus.com/es/mmorpg/enciclopedia/recursos/11647-runa-ret-pm
 
 /**
  * Clean void objects
@@ -29,4 +42,22 @@ scrapeIt(URL, {
  */
 function cleaner (data) {
   return data.filter(item => item.url && item.title)
+}
+
+async function download ({ url, title }) {
+  const path = PATH.resolve(__dirname, 'runes', `${title}.png`)
+  const writer = FS.createWriteStream(path)
+
+  const response = await axios({
+    url,
+    method: 'GET',
+    responseType: 'stream'
+  })
+
+  response.data.pipe(writer)
+
+  return new Promise((resolve, reject) => {
+    writer.on('finish', resolve)
+    writer.on('error', reject)
+  })
 }
