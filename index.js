@@ -1,4 +1,4 @@
-const scrapeIt = require('scrape-it')
+const scrapeIt = require('scrape-it') // scrapper
 const FS = require('fs')
 const PATH = require('path')
 const axios = require('axios')
@@ -10,7 +10,7 @@ const BLUEPRINT = {
     listItem: '.ak-linker a',
     data: {
       url: {
-        selector: 'a',
+        selector: 'img',
         attr: 'src'
       },
       title: {
@@ -25,14 +25,12 @@ const BLUEPRINT = {
 multiScrap()
 
 async function multiScrap () {
-  for (let i = 0; i <= PAGES; i++) {
+  for (let i = 1; i <= PAGES; i++) {
     const scrape = await scrapeIt(url(i), BLUEPRINT)
     const cleanData = cleaner(scrape.data.runes)
     cleanData.forEach(item => download(item))
   }
 }
-
-// https://www.dofus.com/es/mmorpg/enciclopedia/recursos/11647-runa-ret-pm
 
 /**
  * Clean void objects
